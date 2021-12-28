@@ -16,7 +16,7 @@ createConnection()
     // 注册中间件
     app.use(logger());
     app.use(cors());
-    app.use(bodyParser());
+    app.use(bodyParser());//通过 ctx.request.body 获取到了请求体的数据
 
     // 响应用户请求
     app.use(router.routes()).use(router.allowedMethods());
