@@ -34,6 +34,14 @@ export default class UserController {
 
   //更新单个User ctx.request.body 获取到了请求体的数据
   public static async updateUser(ctx: Context) {
+    //jwt鉴权 在合适的地方校验用户的 Token，确认其是否有足够的权限
+    const userId = +ctx.params.id;
+    if (userId !== +ctx.state.user.id) { //ctx.state.user.id
+      ctx.status = 403;
+      ctx.body = { message: '无权进行此操作' };
+      return;
+    }
+
     const userRepository = getManager().getRepository(User);
     let hpassword = await argon2.hash(ctx.request.body.password)
     ctx.request.body.password = hpassword
@@ -51,6 +59,13 @@ export default class UserController {
 
   //删除单个User
   public static async deleteUser(ctx: Context) {
+    const userId = +ctx.params.id;
+    if (userId !== +ctx.state.user.id) {
+      ctx.status = 403;
+      ctx.body = { message: '无权进行此操作' };
+      return;
+    }
+
     const userRepository = getManager().getRepository(User);
     await userRepository.delete(+ctx.params.id);
     ctx.body = 'success'
