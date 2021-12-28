@@ -1,6 +1,7 @@
 // src/controllers/user.ts
+import { argon2d } from 'argon2';
 import { Context } from 'koa';
-
+import * as argon2 from 'argon2'; //非对称算法进行加密
 import { getManager } from 'typeorm';
 import { User } from '../entity/user';
 //getManager().getRepository(User).findOne(id) .update() .delete()
@@ -34,9 +35,12 @@ export default class UserController {
   //更新单个User ctx.request.body 获取到了请求体的数据
   public static async updateUser(ctx: Context) {
     const userRepository = getManager().getRepository(User);
+    let hpassword = await argon2.hash(ctx.request.body.password)
+    ctx.request.body.password = hpassword
     await userRepository.update(+ctx.params.id, ctx.request.body);
     const updatedUser = await userRepository.findOne(+ctx.params.id);
 
+    //Column 例如我们给 password 设置了 select: false ，使得这个字段在查询时默认不被选中
     if (updatedUser) {
       ctx.status = 200;
       ctx.body = updatedUser;
@@ -49,7 +53,7 @@ export default class UserController {
   public static async deleteUser(ctx: Context) {
     const userRepository = getManager().getRepository(User);
     await userRepository.delete(+ctx.params.id);
-
+    ctx.body = 'success'
     ctx.status = 204;
   }
 }
