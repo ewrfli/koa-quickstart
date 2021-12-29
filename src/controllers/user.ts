@@ -36,7 +36,7 @@ export default class UserController {
   public static async updateUser(ctx: Context) {
     //jwt鉴权 在合适的地方校验用户的 Token，确认其是否有足够的权限
     const userId = +ctx.params.id;
-    if (userId !== +ctx.state.user.id) { //ctx.state.user.id
+    if (userId !== +ctx.state.user.id) { //ctx.state.user.id 对比 只能登陆的user的id修改相同url/id
       ctx.status = 403;
       ctx.body = { message: '无权进行此操作' };
       return;

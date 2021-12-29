@@ -26,7 +26,7 @@ export default class AuthController {
       ctx.status = 200; //存在的话再通过 argon2.verify 来验证请求体中的明文密码 password 是否和数据库中存储的加密密码是否一致，
       //如果一致则通过 jwt.sign 签发 Token如果不一致则还是返回 401。
       ctx.body = { token: jwt.sign({ id: user.id }, JWT_SECRET) };
-      // 最新安装的koa-jwt不支持jwt.sign了，要直接用jsonwebtoken.sign。大家学习时注意啦
+      //这里的 Token 负载就是标识用户 ID 的对象 { id: user.id } ，这样后面鉴权成功后就可以通过 ctx.user.id 来获取用户 ID
     } else {
       ctx.status = 401;
       ctx.body = { message: '密码错误' };

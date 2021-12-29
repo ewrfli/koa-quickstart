@@ -3,6 +3,7 @@ import Koa from 'koa';
 import cors from '@koa/cors';
 import bodyParser from 'koa-bodyparser';
 import { createConnection } from 'typeorm';
+
 import 'reflect-metadata';
 
 import jwt from 'koa-jwt';
