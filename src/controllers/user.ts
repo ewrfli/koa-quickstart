@@ -4,6 +4,7 @@ import { Context } from 'koa';
 import * as argon2 from 'argon2'; //非对称算法进行加密
 import { getManager } from 'typeorm';
 import { User } from '../entity/user';
+import { NotFoundException, ForbiddenException } from '../exceptions';//错误处理
 //getManager().getRepository(User).findOne(id) .update() .delete()
 
 
@@ -29,6 +30,7 @@ export default class UserController {
       ctx.body = user;
     } else {
       ctx.status = 404;
+      throw new NotFoundException();
     }
   }
 
@@ -39,6 +41,7 @@ export default class UserController {
     if (userId !== +ctx.state.user.id) { //ctx.state.user.id 对比 只能登陆的user的id修改相同url/id
       ctx.status = 403;
       ctx.body = { message: '无权进行此操作' };
+      throw new ForbiddenException();
       return;
     }
 
@@ -63,6 +66,7 @@ export default class UserController {
     if (userId !== +ctx.state.user.id) {
       ctx.status = 403;
       ctx.body = { message: '无权进行此操作' };
+      throw new ForbiddenException();
       return;
     }
 
